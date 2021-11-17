@@ -7,6 +7,10 @@ services:
       - "8000:8000"
     depends_on:
       - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - CURRCONV_API_KEY=8eb03c018bda080be6a1
   redis:
     image: redis
     ports:

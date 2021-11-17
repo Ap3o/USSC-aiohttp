@@ -3,7 +3,7 @@ from typing import NamedTuple
 
 import exceptions
 import redis_db
-import currency
+from code import currency
 
 
 class Conversion(NamedTuple):

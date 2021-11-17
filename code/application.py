@@ -4,7 +4,7 @@ from aiohttp.web import run_app
 from containers import ApplicationContainer
 
 
-def create_app():
+def create_app() -> web.Application:
     container = ApplicationContainer()
 
     app = container.app()

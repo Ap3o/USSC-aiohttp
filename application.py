@@ -1,4 +1,5 @@
 from aiohttp import web
+from aiohttp.web import run_app
 
 from containers import ApplicationContainer
 
@@ -15,3 +16,7 @@ def create_app():
     ])
 
     return app
+
+
+if __name__ == "__main__":
+    run_app(create_app(), port=8000)

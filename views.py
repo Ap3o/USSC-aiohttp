@@ -38,7 +38,7 @@ async def convert(request: web.Request) -> web.Response:
     )
 
     key = f"{new_conversion.convert_from}_{new_conversion.convert_to}"
-    # Если такого ключа не будет в кэше, значит валюту нельзя перевести.
+    # Если такого ключа не будет в кэше, попробуем обратится к внешнему апи и узнать курс.
     if redis_db.redis_instance.get(key) is None:
         # проверяем исключение при попытке добавить новую конвертацию
         try:

@@ -2,8 +2,8 @@ from aiohttp import web
 from typing import NamedTuple
 
 import exceptions
-import redis_db
-from code import currency
+import redis_connector
+import currency
 
 
 class Conversion(NamedTuple):
@@ -39,18 +39,18 @@ async def convert(request: web.Request) -> web.Response:
 
     key = f"{new_conversion.convert_from}_{new_conversion.convert_to}"
     # Если такого ключа не будет в кэше, попробуем обратится к внешнему апи и узнать курс.
-    if redis_db.redis_instance.get(key) is None:
+    if redis_connector.redis_instance.get(key) is None:
         # проверяем исключение при попытке добавить новую конвертацию
         try:
-            currency.set_new_currency(key)
+            currency.currencies_instance.set_new_currency(key)
         except exceptions.USSCException as e:
             return web.json_response(
                 {
-                    "error": f"Невозможно перевести валюту {new_conversion.convert_from} в {new_conversion.convert_to}."
+                    "error": f"Невозможно перевести валюту {new_conversion.convert_from} в {new_conversion.convert_to}. {e}"
                 },
                 status=200)
 
-    result = new_conversion.amount * float(redis_db.redis_instance.get(key))
+    result = new_conversion.amount * float(redis_connector.redis_instance.get(key))
     return web.json_response({"result": result}, status=200)
 
 
@@ -61,12 +61,15 @@ async def database(request: web.Request) -> web.Response:
 
     # Очистка данных из кэша
     if request.query["merge"] == "0":
-        redis_db.redis_instance.flushdb()
+        redis_connector.redis_instance.flushdb()
         return web.json_response({"result": "Данные очищены!"})
 
     # Обновление данных
     elif request.query["merge"] == "1":
-        currency.get_currency()
+        try:
+            currency.currencies_instance.update_currency_data()
+        except exceptions.USSCException as e:
+            web.json_response({"error": e})
         return web.json_response({"result": "Данные обновлены."})
     else:
         return web.json_response({"error": f"Wrong merge value ({request.query['merge']})"})

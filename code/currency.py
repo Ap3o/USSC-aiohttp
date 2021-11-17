@@ -18,12 +18,6 @@ def get_request_json(conv: str) -> requests.Request:
 
 class Currencies:
     def __init__(self):
-        """
-        Так как я предполагаю, что данные в редисе на продакшене будут не только от этого приложения,
-        но и другие, чтобы не хранить ключ и словарь с курсом, так как это замедлит работу redis,
-        было принято решение сделать массив
-        С уже закэшеринованными данными, чтобы после их обновить в функции update_currency_data()
-        """
         self.cached_in_redis = []
 
     def set_new_currency(self, conv: str) -> None:

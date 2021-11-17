@@ -1,7 +1,7 @@
 Тестовое задание для УЦСБ в отдел разработки на должность Python Junior developer.
 
 Запуск проекта
-> docker-compose run
+> docker-compose run web
 
 Запуск тестов(Для запуска требуется redis)
 > python -m unittest code/tests.py

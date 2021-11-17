@@ -59,6 +59,9 @@ async def database(request: web.Request) -> web.Response:
     if request.method != "POST":
         return web.json_response({"error": "Wrong method"})
 
+    if "merge" not in request.query:
+        return web.json_response({"error": "Не передано значение merge."})
+
     # Очистка данных из кэша
     if request.query["merge"] == "0":
         redis_connector.redis_instance.flushdb()

@@ -1,0 +1,2 @@
+class USSCException(Exception):
+    pass

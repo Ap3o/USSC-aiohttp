@@ -1,26 +1,17 @@
+import exceptions
 import redis_db
-import requests
-
 import config
 
-
-def get_all_currency_methods() -> str:
-    methods = ""
-    for key in redis_db.redis_instance.keys():
-        key = str(key)
-        _ = key.split('_')
-        methods += f"{_[0]} to {_[1]}\n"
-
-    return methods
+import os
+import requests
 
 
-def get_currency():
-    for conv in config.UPDATE_CONVERSION:
-        req = requests.get(config.CURRCONV_LINK,
-                           params={"q": conv, "compact": "ultra", "apiKey": config.CURRCONV_API_KEY}).json()
+def set_new_currency(conv):
+    req = requests.get(config.CURRCONV_LINK,
+                       params={"q": conv, "compact": "ultra", "apiKey": os.getenv("CURRCONV_API_KEY")}).json()
 
-        redis_db.redis_instance.set(conv.replace('RUB', "RUR"), req[conv])
-
-
-if __name__ == "__main__":
-    get_currency()
+    if conv not in req:
+        # Вызываем ошибку для того чтобы исключить дальнейшую проверку в апи
+        raise exceptions.USSCException(f"Пустой ответ от сервера {config.CURRCONV_LINK}")
+    else:
+        redis_db.redis_instance.set(conv, req[conv])

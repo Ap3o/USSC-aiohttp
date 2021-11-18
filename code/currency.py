@@ -36,7 +36,8 @@ class Currencies:
             redis_connector.redis_instance.set(value, request[value])
 
     def flush_db(self) -> None:
-        redis_connector.redis_instance.flushdb(asynchronous=True)
+        for key in self.cached_in_redis:
+            redis_connector.redis_instance.delete(key)
         self.cached_in_redis = []
 
 

@@ -37,6 +37,10 @@ class USSCTestCase(AioHTTPTestCase):
             self.assertEqual(response.status, 200)
             text = await response.text()
             self.assertTrue("result" in json.loads(text))
+        async with self.client.request("GET", "/convert/?from=RUB&to=USD&amount=42") as response:
+            self.assertEqual(response.status, 200)
+            text = await response.text()
+            self.assertTrue("result" in json.loads(text))
 
     async def test_post_1(self):
         async with self.client.request("POST", "/database/", params={"merge": 1}) as response:

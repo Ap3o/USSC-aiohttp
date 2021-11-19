@@ -12,4 +12,5 @@ Environment variables
 > REDIS_PORT = 6379
 > 
 > CURRCONV_API_KEY = 8eb03c018bda080be6a1
-> 
+>
+* В решении используется 810 код валюты.

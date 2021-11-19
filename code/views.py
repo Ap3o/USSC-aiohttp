@@ -57,22 +57,22 @@ async def convert(request: web.Request) -> web.Response:
 # /database/
 async def database(request: web.Request) -> web.Response:
     if request.method != "POST":
-        return web.json_response({"error": "Wrong method"})
+        return web.json_response({"error": "Wrong method"}, status=200)
 
     if "merge" not in request.query:
-        return web.json_response({"error": "Не передано значение merge."})
+        return web.json_response({"error": "Не передано значение merge."}, status=200)
 
     # Очистка данных из кэша
     if request.query["merge"] == "0":
         redis_connector.redis_instance.flushdb()
-        return web.json_response({"result": "Данные очищены!"})
+        return web.json_response({"result": "Данные очищены!"}, status=200)
 
     # Обновление данных
     elif request.query["merge"] == "1":
         try:
             currency.currencies_instance.update_currency_data()
         except exceptions.USSCException as e:
-            web.json_response({"error": e})
-        return web.json_response({"result": "Данные обновлены."})
+            return web.json_response({"error": e}, status=200)
+        return web.json_response({"result": "Данные обновлены."}, status=200)
     else:
-        return web.json_response({"error": f"Wrong merge value ({request.query['merge']})"})
+        return web.json_response({"error": f"Wrong merge value ({request.query['merge']})"}, status=200)

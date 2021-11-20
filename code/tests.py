@@ -59,3 +59,11 @@ class USSCTestCase(AioHTTPTestCase):
             self.assertEqual(response.status, 200)
             text = await response.text()
             self.assertTrue("error" in json.loads(text))
+
+    async def test_post_on_get(self):
+        async with self.client.request("POST", "/convert/", params={"merge": "ff"}) as response:
+            self.assertEqual(response.status, 405)
+
+    async def test_get_on_on(self):
+        async with self.client.request("GET", "/database/?merge=1") as response:
+            self.assertEqual(response.status, 405)

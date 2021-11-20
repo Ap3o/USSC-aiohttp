@@ -14,8 +14,6 @@ class Conversion(NamedTuple):
 
 # /convert/
 async def convert(request: web.Request) -> web.Response:
-    if request.method != "GET":
-        return web.json_response({"error": "Wrong method"}, status=200)
 
     keys = ['from', 'to', 'amount']
     for key in keys:
@@ -56,8 +54,6 @@ async def convert(request: web.Request) -> web.Response:
 
 # /database/
 async def database(request: web.Request) -> web.Response:
-    if request.method != "POST":
-        return web.json_response({"error": "Wrong method"}, status=200)
 
     if "merge" not in request.query:
         return web.json_response({"error": "Не передано значение merge."}, status=200)
